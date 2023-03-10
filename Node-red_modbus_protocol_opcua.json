@@ -1,0 +1,1378 @@
+[
+    {
+        "id": "9d8741a43ad11eed",
+        "type": "tab",
+        "label": "Flow 4",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "6337dfd92b7b0c53",
+        "type": "modbus-flex-server",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "logEnabled": false,
+        "serverAddress": "192.168.5.66",
+        "serverPort": "502",
+        "responseDelay": 100,
+        "unitId": 1,
+        "delayUnit": "ms",
+        "coilsBufferSize": 20000,
+        "registersBufferSize": 20000,
+        "minAddress": "0",
+        "splitAddress": "4000",
+        "funcGetCoil": "function getFlexCoil(addr, unitID) {\n\tif (unitID === node.unitId && \n\t\taddr >= node.minAddress && \n\t\taddr <= node.splitAddress) { \n\n\t\treturn node.coils.readUInt8(addr * node.bufferFactor) \n\t}  \n}",
+        "funcGetDiscreteInput": "function getFlexDiscreteInput(addr, unitID) {\n\taddr += node.splitAddress\n\tif (unitID === node.unitId && \n\t\taddr >= node.splitAddress && \n\t\taddr <= node.splitAddress * 2) { \n\n\t\treturn node.coils.readUInt8(addr * node.bufferFactor) \n\t}  \n}",
+        "funcGetInputRegister": "function getFlexInputRegister(addr, unitID) { \n\tif (unitID === node.unitId && \n\t\taddr >= node.minAddress && \n\t\taddr <= node.splitAddress) { \n\n\t\treturn node.registers.readUInt16BE(addr * node.bufferFactor)  \n\t} \n}",
+        "funcGetHoldingRegister": "function getFlexHoldingRegsiter(addr, unitID) { \n\taddr += node.splitAddress\n\tif (unitID === node.unitId && \n\t\taddr >= node.splitAddress && \n\t\taddr <= node.splitAddress * 2) { \n\n\t\treturn node.registers.readUInt16BE(addr * node.bufferFactor)  \n\t} \n}",
+        "funcSetCoil": "function setFlexCoil(addr, value, unitID) { \n\tif (unitID === node.unitId && \n\t\taddr >= node.minAddress && \n\t\taddr <= node.splitAddress) { \n\n\t\tnode.coils.writeUInt8(value, addr * node.bufferFactor)  \n\t} \n}",
+        "funcSetRegister": "function setFlexRegister(addr, value, unitID) { \n\taddr += node.splitAddress\n\tif (unitID === node.unitId && \n\t\taddr >= node.splitAddress && \n\t\taddr <= node.splitAddress * 2) { \n\n\t\tnode.registers.writeUInt16BE(value, addr * node.bufferFactor)  \n\t} \n}",
+        "showErrors": false,
+        "x": 1060,
+        "y": 100,
+        "wires": [
+            [],
+            [],
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "b6b92f1ce6cc721b",
+        "type": "opcua-compact-server",
+        "z": "9d8741a43ad11eed",
+        "port": "54844",
+        "endpoint": "",
+        "productUri": "",
+        "acceptExternalCommands": true,
+        "maxAllowedSessionNumber": 10,
+        "maxConnectionsPerEndpoint": 10,
+        "maxAllowedSubscriptionNumber": 100,
+        "alternateHostname": "",
+        "name": "",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "allowAnonymous": true,
+        "individualCerts": false,
+        "isAuditing": false,
+        "serverDiscovery": true,
+        "users": [],
+        "xmlsetsOPCUA": [],
+        "publicCertificateFile": "",
+        "privateCertificateFile": "",
+        "registerServerMethod": 1,
+        "discoveryServerEndpointUrl": "opc.tcp://localhost:54844",
+        "capabilitiesForMDNS": "",
+        "maxNodesPerRead": 1000,
+        "maxNodesPerWrite": 1000,
+        "maxNodesPerHistoryReadData": 100,
+        "maxNodesPerBrowse": 3000,
+        "maxBrowseContinuationPoints": 10,
+        "maxHistoryContinuationPoints": 10,
+        "delayToInit": 1000,
+        "delayToClose": 200,
+        "serverShutdownTimeout": 100,
+        "addressSpaceScript": "async function constructAlarmAddressSpace(server, addressSpace, eventObjects, done) \n{\n\n  const opcua = coreServer.choreCompact.opcua;\n  const LocalizedText = opcua.LocalizedText;\n  const namespace = addressSpace.getOwnNamespace();\n  const rootFolder = addressSpace.findNode(\"RootFolder\");\n  const objectsFolder = addressSpace.rootFolder.objects;\n\n  const Variant = opcua.Variant;\n  const DataType = opcua.DataType;\n  const DataValue = opcua.DataValue;  \n\n  const delay = ms => new Promise(res => setTimeout(res, ms))\n\n  for (var i = 0; i < 12; i++) \n  {\n    await delay(15)\n  }\n  \n  let nodeVariable = [];\n  let browse_name_array = []\n  let display_name_array = []\n  let node_id_array = []\n  let value_array = []\n  let variable = []\n  let b_name = []\n\n\n  browse_name_array = this.sandboxFlowContext.get(\"browsename\");\n  display_name_array = this.sandboxFlowContext.get(\"displayname\");\n  node_id_array = this.sandboxFlowContext.get(\"node_id\");\n  value_array = this.sandboxFlowContext.get(\"value_array_obtained\");\n\n  for (var i = 0; i < 3; i++) {\n    b_name = namespace.addObject({\n      organizedBy: addressSpace.rootFolder.objects, browseName: browse_name_array[i]\n    });\n\n    nodeVariable[i] = namespace.addVariable(\n      {\n        componentOf: b_name,\n        browseName: display_name_array[i],\n        nodeId: \"ns=1;s=\" + node_id_array[i],\n        dataType: \"Double\",\n        value: {\n          \"dataType\": DataType.Double,\n          \"value\": value_array[i]\n        },\n      });\n  }\n  while (true) {\n    for (var i = 0; i < 3; i++) {\n      value_array = this.sandboxFlowContext.get(\"value_array_obtained\");\n\n      nodeVariable[i].setValueFromSource({\n        dataType: DataType.Double,\n        value: value_array[i]\n      });\n    }\n    const delay = ms => new Promise(res => setTimeout(res, ms));\n    await delay(30);\n  }\n}",
+        "x": 360,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "bb3fd58847693f08",
+        "type": "inject",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "props": [],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.01",
+        "topic": "",
+        "x": 110,
+        "y": 260,
+        "wires": [
+            [
+                "bdb03c3b0670e66f"
+            ]
+        ]
+    },
+    {
+        "id": "fc2f1d78cea67f7b",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "write int32",
+        "func": "    var fc = 16;\n\n\n    var ads1 = msg.payload[2].ADDRESS\n    \n    var qnty = 2;\n    \n    //create buffer\n    var buf = Buffer.alloc(4);\n\n    buf.writeInt32BE(msg.payload[2].VALUE);\n\n    var values = [(buf[0] * 256 + buf[1]), (buf[2] * 256) + buf[3]]\n\n    \n\n    var msg1 = {};\n    \n    msg1.payload = { \"value\": values, 'fc': fc, 'unitid': 1, 'address': ads1, 'quantity': qnty };\n   \n    node.send(msg1);\n\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 220,
+        "wires": [
+            [
+                "17551c2faaa1a771"
+            ]
+        ]
+    },
+    {
+        "id": "bc660807b05fac21",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "write int32",
+        "func": "    var fc = 16;\n\n   \n    var ads1 = msg.payload[4].ADDRESS    \n    var qnty = 2;\n\n    //create buffer\n    var buf = Buffer.alloc(4);\n\n    buf.writeInt32BE(msg.payload[4].VALUE);\n    var values = [(buf[0] * 256 + buf[1]), (buf[2] * 256) + buf[3]]    \n    \n    var msg1 = {};   \n    msg1.payload = { \"value\": values, 'fc': fc, 'unitid': 1, 'address': ads1, 'quantity': qnty };\n   \n    node.send(msg1);\n\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 260,
+        "wires": [
+            [
+                "17551c2faaa1a771"
+            ]
+        ]
+    },
+    {
+        "id": "17551c2faaa1a771",
+        "type": "modbus-flex-write",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "server": "294054bb709ff838",
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 830,
+        "y": 220,
+        "wires": [
+            [
+                "631395be0f37551d"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "631395be0f37551d",
+        "type": "debug",
+        "z": "9d8741a43ad11eed",
+        "name": "debug 73",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1060,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "c2764048a7896418",
+        "type": "csv",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "once",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 410,
+        "y": 260,
+        "wires": [
+            [
+                "fc2f1d78cea67f7b",
+                "bc660807b05fac21",
+                "5d6cdb4849f56dd8"
+            ]
+        ]
+    },
+    {
+        "id": "bdb03c3b0670e66f",
+        "type": "file in",
+        "z": "9d8741a43ad11eed",
+        "name": "test",
+        "filename": "/home/iplon/MODBUS_WRITE.csv",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 250,
+        "y": 260,
+        "wires": [
+            [
+                "c2764048a7896418"
+            ]
+        ]
+    },
+    {
+        "id": "5d6cdb4849f56dd8",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "write uint32",
+        "func": "    var fc = 16;\n\n  \n    var ads1 = msg.payload[0].ADDRESS\n    \n    var qnty = 2;\n    \n    //create buffer\n    var buf = Buffer.alloc(4);\n\n    buf.writeUInt32BE(msg.payload[0].VALUE);\n\n    var values = [(buf[0] * 256 + buf[1]), (buf[2] * 256) + buf[3]]\n\n    \n    \n \n    var msg1 = {};\n   \n    msg1.payload = { \"value\": values, 'fc': fc, 'unitid': 1, 'address': ads1, 'quantity': qnty };\n   \n    node.send(msg1);\n\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 180,
+        "wires": [
+            [
+                "17551c2faaa1a771"
+            ]
+        ]
+    },
+    {
+        "id": "f93b32b0c166116f",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "modbus_values",
+        "func": "var no_elements = msg.payload.length\nlet value_array = []\nfor (var i = 0; i < no_elements; i++)\n{            \n      var val = msg.payload[i]\n      value_array.push(val)\n        \n}        \n   \nflow.set(\"value_array_obtained\", value_array)\n  \nmsg.payload = value_array;\nflow.set(\"value_array_obtained\", value_array)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1280,
+        "y": 360,
+        "wires": [
+            [
+                "9178735b6d0ef60e"
+            ]
+        ]
+    },
+    {
+        "id": "5baf85ee37cdc828",
+        "type": "inject",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "props": [],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.03",
+        "topic": "",
+        "x": 110,
+        "y": 580,
+        "wires": [
+            [
+                "540c4e08b47b3048"
+            ]
+        ]
+    },
+    {
+        "id": "59f5162d712c0057",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "write int32",
+        "func": "    let value_array = flow.get(\"value_array_obtained\")\n    var fc = 16;\n\n\n    var ads1 = msg.payload[2].ADDRESS_WRITE\n    \n    var qnty = 2;\n    \n    //create buffer\n    var buf = Buffer.alloc(4);\n\n    buf.writeInt32BE(value_array[1]);\n\n    var values = [(buf[0] * 256 + buf[1]), (buf[2] * 256) + buf[3]]\n\n    \n\n    var msg1 = {};\n    \n    msg1.payload = { \"value\": values, 'fc': fc, 'unitid': 1, 'address': ads1, 'quantity': qnty };\n   \n    node.send(msg1);\n\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 580,
+        "wires": [
+            [
+                "afc1be47bdcdd6df"
+            ]
+        ]
+    },
+    {
+        "id": "ec97cf350a1b2eaf",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "write int32",
+        "func": "    let value_array = flow.get(\"value_array_obtained\")\n    var fc = 16;\n\n   \n    var ads1 = msg.payload[4].ADDRESS_WRITE\n    var qnty = 2;\n\n    //create buffer\n    var buf = Buffer.alloc(4);\n\n    buf.writeInt32BE(value_array[2]);\n    var values = [(buf[0] * 256 + buf[1]), (buf[2] * 256) + buf[3]]    \n    \n    var msg1 = {};   \n    msg1.payload = { \"value\": values, 'fc': fc, 'unitid': 1, 'address': ads1, 'quantity': qnty };\n   \n    node.send(msg1);\n\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 620,
+        "wires": [
+            [
+                "afc1be47bdcdd6df"
+            ]
+        ]
+    },
+    {
+        "id": "afc1be47bdcdd6df",
+        "type": "modbus-flex-write",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "server": "294054bb709ff838",
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 830,
+        "y": 580,
+        "wires": [
+            [
+                "9c0a962820afa274"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "9c0a962820afa274",
+        "type": "debug",
+        "z": "9d8741a43ad11eed",
+        "name": "debug 79",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1080,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "bd14a42f9cea0f74",
+        "type": "csv",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "once",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 410,
+        "y": 580,
+        "wires": [
+            [
+                "59f5162d712c0057",
+                "ec97cf350a1b2eaf",
+                "b50b3d865ae39e90"
+            ]
+        ]
+    },
+    {
+        "id": "540c4e08b47b3048",
+        "type": "file in",
+        "z": "9d8741a43ad11eed",
+        "name": "test",
+        "filename": "/home/iplon/MODBUS_WRITE.csv",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 270,
+        "y": 580,
+        "wires": [
+            [
+                "bd14a42f9cea0f74"
+            ]
+        ]
+    },
+    {
+        "id": "b50b3d865ae39e90",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "write uint32",
+        "func": "    let value_array = flow.get(\"value_array_obtained\")\n\n    var fc = 16;    \n    var ads1 = msg.payload[0].ADDRESS_WRITE\n    \n    var qnty = 2;\n    \n    //create buffer\n    var buf = Buffer.alloc(4);\n\n    buf.writeUInt32BE(value_array[0]);\n\n    var values = [(buf[0] * 256 + buf[1]), (buf[2] * 256) + buf[3]]\n\n    \n    \n \n    var msg1 = {};\n   \n    msg1.payload = { \"value\": values, 'fc': fc, 'unitid': 1, 'address': ads1, 'quantity': qnty };\n   \n    node.send(msg1);\n\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 540,
+        "wires": [
+            [
+                "afc1be47bdcdd6df"
+            ]
+        ]
+    },
+    {
+        "id": "bb7e74d69660ddf1",
+        "type": "inject",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "props": [],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.04",
+        "topic": "",
+        "x": 110,
+        "y": 700,
+        "wires": [
+            [
+                "ae87c0d3bdd0a94b"
+            ]
+        ]
+    },
+    {
+        "id": "b3099d153d394e48",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "read uint32",
+        "func": "let address_array = []\n\n\nlet query = {}\n\n    var ads = msg.payload[0].ADDRESS_WRITE\n    query.payload = {'fc': 3,'unitid': 1, 'address': ads, 'quantity':2 };\n    \n   node.send(query);\n\n\nreturn null;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 700,
+        "wires": [
+            [
+                "a99eb28be16b196f"
+            ]
+        ]
+    },
+    {
+        "id": "ae87c0d3bdd0a94b",
+        "type": "file in",
+        "z": "9d8741a43ad11eed",
+        "name": "test",
+        "filename": "/home/iplon/MODBUS_WRITE.csv",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 250,
+        "y": 700,
+        "wires": [
+            [
+                "f8515dc98d10ce53"
+            ]
+        ]
+    },
+    {
+        "id": "f8515dc98d10ce53",
+        "type": "csv",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "once",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 410,
+        "y": 700,
+        "wires": [
+            [
+                "b3099d153d394e48",
+                "84a65dabdd28be66",
+                "6557d3c5adb123a0",
+                "ff028a4c3182523f"
+            ]
+        ]
+    },
+    {
+        "id": "601ab0176b3e6da8",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "uint32",
+        "func": "\nconst buf = Buffer.from(msg.payload.buffer);\nconst value = buf.readUInt32BE();\nmsg.payload = value;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1010,
+        "y": 680,
+        "wires": [
+            [
+                "fc65e380713eb516"
+            ]
+        ]
+    },
+    {
+        "id": "84a65dabdd28be66",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "read int32",
+        "func": "let address_array = []\n\n\nlet query = {}\n\n    var ads = msg.payload[2].ADDRESS_WRITE\n    query.payload = {'fc': 3,'unitid': 1, 'address': ads, 'quantity':2 };\n    \n   node.send(query);\n\n   flow.set(\"conversion\",1)\n\nreturn null;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 740,
+        "wires": [
+            [
+                "a99eb28be16b196f"
+            ]
+        ]
+    },
+    {
+        "id": "6557d3c5adb123a0",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "read int32",
+        "func": "let address_array = []\n\n\nlet query = {}\n\n    var ads = msg.payload[4].ADDRESS_WRITE\n    query.payload = {'fc': 3,'unitid': 1, 'address': ads, 'quantity':2 };\n    \n   node.send(query);\nflow.set(\"conversion\", 1)\n\nreturn null;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 780,
+        "wires": [
+            [
+                "a99eb28be16b196f"
+            ]
+        ]
+    },
+    {
+        "id": "5d37bb33343ee4c6",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "int32 ",
+        "func": "\nconst buf = Buffer.from(msg.payload.buffer);\nconst value = buf.readInt32BE();\nmsg.payload = value;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1010,
+        "y": 720,
+        "wires": [
+            [
+                "fc65e380713eb516"
+            ]
+        ]
+    },
+    {
+        "id": "29edeb01813a8297",
+        "type": "switch",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "property": "conversion",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 890,
+        "y": 700,
+        "wires": [
+            [
+                "601ab0176b3e6da8"
+            ],
+            [
+                "5d37bb33343ee4c6"
+            ]
+        ]
+    },
+    {
+        "id": "fc65e380713eb516",
+        "type": "join",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "0.5",
+        "count": "3",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1130,
+        "y": 700,
+        "wires": [
+            [
+                "ae070e3df16f3612"
+            ]
+        ]
+    },
+    {
+        "id": "41003c97ea1da3c0",
+        "type": "debug",
+        "z": "9d8741a43ad11eed",
+        "name": "debug 71",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "ae070e3df16f3612",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "values_to_opcua",
+        "func": "var no_elements = msg.payload.length\nlet value_array = []\nfor (var i = 0; i < no_elements; i++)\n{            \n      var val = msg.payload[i]\n      value_array.push(val)\n        \n}        \n   \nflow.set(\"value_array_obtained_opc\", value_array)\n  \nmsg.payload = value_array;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1290,
+        "y": 700,
+        "wires": [
+            [
+                "41003c97ea1da3c0"
+            ]
+        ]
+    },
+    {
+        "id": "a99eb28be16b196f",
+        "type": "modbus-flex-getter",
+        "z": "9d8741a43ad11eed",
+        "name": "modbus_read",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "logIOActivities": false,
+        "server": "528f73352d749058",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 740,
+        "y": 700,
+        "wires": [
+            [],
+            [
+                "29edeb01813a8297"
+            ]
+        ]
+    },
+    {
+        "id": "f87daa694be68e8b",
+        "type": "OpcUa-Client",
+        "z": "9d8741a43ad11eed",
+        "endpoint": "edd070d8c710cded",
+        "action": "read",
+        "deadbandtype": "a",
+        "deadbandvalue": 1,
+        "time": 10,
+        "timeUnit": "s",
+        "certificate": "n",
+        "localfile": "",
+        "localkeyfile": "",
+        "securitymode": "None",
+        "securitypolicy": "None",
+        "folderName4PKI": "",
+        "name": "",
+        "x": 660,
+        "y": 940,
+        "wires": [
+            [
+                "261baa5158f6335b"
+            ]
+        ]
+    },
+    {
+        "id": "6bb6ab19b6772dad",
+        "type": "inject",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 90,
+        "y": 940,
+        "wires": [
+            [
+                "47daecae0e02eef1"
+            ]
+        ]
+    },
+    {
+        "id": "278251808497f3fa",
+        "type": "debug",
+        "z": "9d8741a43ad11eed",
+        "name": "debug 80",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1120,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "ff028a4c3182523f",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "set parameters",
+        "func": "var length = msg.payload.length \nflow.set(\"length\", length);\n\nvar browse_name\nlet browse_array = []\nlet node_id_array = []\nlet display_name_array = []\n\nfor (var i = 0; i < length ; i++)\n{\n    if (msg.payload[i].node_id)\n    {\n        var node_id = msg.payload[i].node_id\n        node_id_array.push(node_id)\n        browse_name = msg.payload[i].browsename\n        browse_array.push(browse_name)\n        var displayname = msg.payload[i].displayName;\n        display_name_array.push(displayname)\n        \n    }\n    \n}\n\nflow.set(\"node_id\", node_id_array)\nglobal.set(\"node_id\", node_id_array);\nflow.set(\"browsename\", browse_array);\nflow.set(\"displayname\", display_name_array)\n\nmsg.payload = display_name_array;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 820,
+        "wires": [
+            [
+                "fd6948ad5da735f9"
+            ]
+        ]
+    },
+    {
+        "id": "83db789221263357",
+        "type": "comment",
+        "z": "9d8741a43ad11eed",
+        "name": "Writing to 2100,2102,2104 registers",
+        "info": "",
+        "x": 200,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "82787ac5dc8f5653",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "read uint32",
+        "func": "let address_array = []\n\n\nlet query = {}\n\n    var ads = msg.payload[0].ADDRESS\n    query.payload = {'fc': 3,'unitid': 1, 'address': ads, 'quantity':2 };\n    \n   node.send(query);\n\n\nreturn null;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 360,
+        "wires": [
+            [
+                "46fbade19346aee3"
+            ]
+        ]
+    },
+    {
+        "id": "23ba3fcd6264d2c8",
+        "type": "file in",
+        "z": "9d8741a43ad11eed",
+        "name": "test",
+        "filename": "/home/iplon/MODBUS_WRITE.csv",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 250,
+        "y": 360,
+        "wires": [
+            [
+                "b69aa67610ed5c98"
+            ]
+        ]
+    },
+    {
+        "id": "b69aa67610ed5c98",
+        "type": "csv",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "once",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 410,
+        "y": 360,
+        "wires": [
+            [
+                "82787ac5dc8f5653",
+                "066e8be4f9d510ac",
+                "223a7518c41a6c60"
+            ]
+        ]
+    },
+    {
+        "id": "5f4c4ffc41c487d4",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "uint32",
+        "func": "\nconst buf = Buffer.from(msg.payload.buffer);\nconst value = buf.readUInt32BE();\nmsg.payload = value;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1010,
+        "y": 340,
+        "wires": [
+            [
+                "079f85a69ca04f0d"
+            ]
+        ]
+    },
+    {
+        "id": "066e8be4f9d510ac",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "read int32",
+        "func": "let address_array = []\n\n\nlet query = {}\n\n    var ads = msg.payload[2].ADDRESS\n    query.payload = {'fc': 3,'unitid': 1, 'address': ads, 'quantity':2 };\n    \n   node.send(query);\n\n   flow.set(\"conversion\",1)\n\nreturn null;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 400,
+        "wires": [
+            [
+                "46fbade19346aee3"
+            ]
+        ]
+    },
+    {
+        "id": "223a7518c41a6c60",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "read int32",
+        "func": "let address_array = []\n\n\nlet query = {}\n\n    var ads = msg.payload[4].ADDRESS\n    query.payload = {'fc': 3,'unitid': 1, 'address': ads, 'quantity':2 };\n    \n   node.send(query);\nflow.set(\"conversion\", 1)\n\nreturn null;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 440,
+        "wires": [
+            [
+                "46fbade19346aee3"
+            ]
+        ]
+    },
+    {
+        "id": "f3fe4cdba5627e2a",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "int32 ",
+        "func": "\nconst buf = Buffer.from(msg.payload.buffer);\nconst value = buf.readInt32BE();\nmsg.payload = value;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1010,
+        "y": 380,
+        "wires": [
+            [
+                "079f85a69ca04f0d"
+            ]
+        ]
+    },
+    {
+        "id": "d3ae088ff42cbcc3",
+        "type": "switch",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "property": "conversion",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 890,
+        "y": 360,
+        "wires": [
+            [
+                "5f4c4ffc41c487d4"
+            ],
+            [
+                "f3fe4cdba5627e2a"
+            ]
+        ]
+    },
+    {
+        "id": "079f85a69ca04f0d",
+        "type": "join",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "0.5",
+        "count": "3",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1130,
+        "y": 360,
+        "wires": [
+            [
+                "f93b32b0c166116f"
+            ]
+        ]
+    },
+    {
+        "id": "46fbade19346aee3",
+        "type": "modbus-flex-getter",
+        "z": "9d8741a43ad11eed",
+        "name": "modbus_read",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "logIOActivities": false,
+        "server": "528f73352d749058",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 740,
+        "y": 360,
+        "wires": [
+            [],
+            [
+                "d3ae088ff42cbcc3"
+            ]
+        ]
+    },
+    {
+        "id": "9178735b6d0ef60e",
+        "type": "debug",
+        "z": "9d8741a43ad11eed",
+        "name": "debug 78",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1200,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "70a3cf9b3ea1f232",
+        "type": "inject",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "props": [],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.02",
+        "topic": "",
+        "x": 110,
+        "y": 360,
+        "wires": [
+            [
+                "23ba3fcd6264d2c8"
+            ]
+        ]
+    },
+    {
+        "id": "c64221f42eedf5c7",
+        "type": "comment",
+        "z": "9d8741a43ad11eed",
+        "name": "Reading from 2100, 2102,2104 registers",
+        "info": "",
+        "x": 220,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "69955f7bbf1b2406",
+        "type": "comment",
+        "z": "9d8741a43ad11eed",
+        "name": "values read from 2100,2102,2104 are written to 1000,1002,1004 registers",
+        "info": "",
+        "x": 260,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "bf18db828a69c57d",
+        "type": "comment",
+        "z": "9d8741a43ad11eed",
+        "name": "values read from 1000,1002,1004 registers are sent to OPCUA server",
+        "info": "",
+        "x": 310,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "3548120f6a6254e0",
+        "type": "comment",
+        "z": "9d8741a43ad11eed",
+        "name": "modbus slave",
+        "info": "",
+        "x": 1030,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "bfcd8dc776b48257",
+        "type": "comment",
+        "z": "9d8741a43ad11eed",
+        "name": "OPCUA server node",
+        "info": "",
+        "x": 370,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "fd6948ad5da735f9",
+        "type": "debug",
+        "z": "9d8741a43ad11eed",
+        "name": "debug 81",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "47daecae0e02eef1",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "node ids",
+        "func": "var array=[\n \"ns=1;s=Active.Power.AP;datatype=Double\",\n \"ns=1;s=Reactive.Power.RP;datatype=Double\",\n \"ns=1;s=PowerFactor.PF;datatype=Double\",\n \n\n ]\n \n msg.payload=array\n \n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 220,
+        "y": 940,
+        "wires": [
+            [
+                "0feed5793486afc0"
+            ]
+        ]
+    },
+    {
+        "id": "51515ad9179aeaf2",
+        "type": "change",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "payload.id",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 490,
+        "y": 940,
+        "wires": [
+            [
+                "f87daa694be68e8b"
+            ]
+        ]
+    },
+    {
+        "id": "0feed5793486afc0",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "topic",
+        "func": "for(var i = 0; i < msg.payload.length; i++)\n{\n    var obj={};\n\nobj.payload= {\n   id: msg.payload[i]\n \n}\n\nnode.send(obj)\n}\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 350,
+        "y": 940,
+        "wires": [
+            [
+                "51515ad9179aeaf2"
+            ]
+        ]
+    },
+    {
+        "id": "261baa5158f6335b",
+        "type": "join",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "3",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "num",
+        "reduceFixup": "",
+        "x": 810,
+        "y": 940,
+        "wires": [
+            [
+                "546c03ab381d3e78"
+            ]
+        ]
+    },
+    {
+        "id": "546c03ab381d3e78",
+        "type": "function",
+        "z": "9d8741a43ad11eed",
+        "name": "function 1",
+        "func": "for (var i = 0; i < msg.payload.length; i++) {\n    var value = msg.payload[i]\n    var b=\"B01\"\n    var d=\"INV\"\n    var f\n    if (i == 0) { f = \"Active_Power\"}\n    if(i == 1) { f = \"Reactive_Power\" }\n    if (i == 2) { f = \"Power_Factor\" }\n    var topic = \"iplon\" + \"/\" + \"v\" + \"/\" + b + \"/\" + d + \"/\" + f + \"/\" +value\n    var obj = {};\n    obj.payload = { topic }\n    node.send(obj);\n} return null;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 1020,
+        "wires": [
+            [
+                "739afb0da1a04808"
+            ]
+        ]
+    },
+    {
+        "id": "739afb0da1a04808",
+        "type": "change",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "payload.topic",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 950,
+        "y": 1020,
+        "wires": [
+            [
+                "b38cc6c38e67640b",
+                "278251808497f3fa"
+            ]
+        ]
+    },
+    {
+        "id": "b38cc6c38e67640b",
+        "type": "mqtt out",
+        "z": "9d8741a43ad11eed",
+        "name": "",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "197d01f56c13f366",
+        "x": 1150,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "294054bb709ff838",
+        "type": "modbus-client",
+        "name": "",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "failureLogEnabled": false,
+        "tcpHost": "192.168.5.66",
+        "tcpPort": "502",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "serialAsciiResponseStartDelimiter": "",
+        "unit_id": 1,
+        "commandDelay": 20,
+        "clientTimeout": 1000,
+        "reconnectOnTimeout": true,
+        "reconnectTimeout": 2000,
+        "parallelUnitIdsAllowed": true
+    },
+    {
+        "id": "528f73352d749058",
+        "type": "modbus-client",
+        "name": "modbus_read",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "failureLogEnabled": true,
+        "tcpHost": "192.168.5.66",
+        "tcpPort": "502",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB0",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "2",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "serialAsciiResponseStartDelimiter": "0x3A",
+        "unit_id": "1",
+        "commandDelay": "1",
+        "clientTimeout": "1000",
+        "reconnectOnTimeout": true,
+        "reconnectTimeout": "2000",
+        "parallelUnitIdsAllowed": true,
+        "showWarnings": true,
+        "showLogs": true
+    },
+    {
+        "id": "edd070d8c710cded",
+        "type": "OpcUa-Endpoint",
+        "endpoint": "opc.tcp://localhost:54844",
+        "secpol": "None",
+        "secmode": "None",
+        "none": true,
+        "login": false,
+        "usercert": false,
+        "usercertificate": "",
+        "userprivatekey": ""
+    },
+    {
+        "id": "197d01f56c13f366",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "10.8.0.19",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    }
+]
