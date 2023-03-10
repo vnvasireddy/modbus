@@ -1,0 +1,2724 @@
+[
+    {
+        "id": "3ca5e98ebdb8ae02",
+        "type": "tab",
+        "label": "MODSCAN (IPLON)",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "a989109eda2a0343",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "0.5",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 127.1429443359375,
+        "y": 683.8571310043335,
+        "wires": [
+            [
+                "b2504fd74f9e5808"
+            ]
+        ]
+    },
+    {
+        "id": "b2504fd74f9e5808",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "enable",
+        "func": "if(flow.get(\"enabled\")){\n   flow.set(\"count\", flow.get(\"count\") + 1);\n    msg.payload = { 'fc': flow.get(\"FC\"), 'unitid': flow.get(\"unitid\"), 'address': flow.get(\"address\"), 'quantity': flow.get(\"length\"), 'conversion': flow.get(\"conversion\"), 'signed': flow.get(\"signed\"), 'double': flow.get(\"double\"), 'long': flow.get(\"long\") };\n}else\n    msg = null;\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 309.1429443359375,
+        "y": 683.8571310043335,
+        "wires": [
+            [
+                "fc177a823ea7bcf9"
+            ]
+        ]
+    },
+    {
+        "id": "f1485d7b4ec5b83e",
+        "type": "ui_button",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "group": "27f299358e903064",
+        "order": 8,
+        "width": "3",
+        "height": "1",
+        "passthru": false,
+        "label": "Start",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "1",
+        "payloadType": "num",
+        "topic": "",
+        "topicType": "str",
+        "x": 429.6429443359375,
+        "y": 861.8571310043335,
+        "wires": [
+            [
+                "88b2cdcf200d130e"
+            ]
+        ]
+    },
+    {
+        "id": "88b2cdcf200d130e",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "enable",
+        "func": "flow.set(\"enabled\", true);\nflow.set(\"count\", 0);",
+        "outputs": "0",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 598.1429443359375,
+        "y": 861.8571310043335,
+        "wires": []
+    },
+    {
+        "id": "49904955e630f249",
+        "type": "ui_button",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "group": "27f299358e903064",
+        "order": 9,
+        "width": "3",
+        "height": "1",
+        "passthru": false,
+        "label": "Stop",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "1",
+        "payloadType": "num",
+        "topic": "",
+        "topicType": "str",
+        "x": 429.1429443359375,
+        "y": 912.8571310043335,
+        "wires": [
+            [
+                "16ffccb378c80983"
+            ]
+        ]
+    },
+    {
+        "id": "16ffccb378c80983",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "disable",
+        "func": "flow.set(\"enabled\", false);",
+        "outputs": "0",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 605.6429443359375,
+        "y": 912.8571310043335,
+        "wires": []
+    },
+    {
+        "id": "5bf1298e67e5577b",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "flow.set(\"address\", msg.payload);",
+        "outputs": "0",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 595.1429443359375,
+        "y": 955.8571310043335,
+        "wires": []
+    },
+    {
+        "id": "4a3f67f632ba1ab5",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "flow.set(\"length\", msg.payload);",
+        "outputs": "0",
+        "noerr": 0,
+        "x": 596.1429443359375,
+        "y": 1000.8571310043335,
+        "wires": []
+    },
+    {
+        "id": "dca435e8d62324ac",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "flow.set(\"FC\", msg.payload);",
+        "outputs": "0",
+        "noerr": 0,
+        "x": 593.1429443359375,
+        "y": 1043.8571310043335,
+        "wires": []
+    },
+    {
+        "id": "fc177a823ea7bcf9",
+        "type": "modbus-flex-getter",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "read",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "logIOActivities": false,
+        "server": "5574bf4fb1d109e6",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 460.1429443359375,
+        "y": 682.8571310043335,
+        "wires": [
+            [
+                "fa7f5e61294f6640",
+                "4f04399aa27a9690",
+                "d8ec521c45312ee5",
+                "8d62d051b947bb0e",
+                "8f9b2ef9ab821239"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "5a2029be7488cda1",
+        "type": "ui_template",
+        "z": "3ca5e98ebdb8ae02",
+        "group": "bda4d49bf15fa6ca",
+        "name": "",
+        "order": 5,
+        "width": "6",
+        "height": "10",
+        "format": "<div style=\"width:100%;\">\n    <div style=\"display:inline-block; width:100%;\" ng-repeat=\"x in msg.payload track by $index\">\n        {{!msg.input.payload.conversion ?\n        ($index + msg.input.payload.address) :\n        (($index*2 + msg.input.payload.address)+'-'+($index*2 + msg.input.payload.address+1))}} : {{ x }}\n    </div>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 1580,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3a184e0561b9c953",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "init",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160.1429443359375,
+        "y": 862.8571310043335,
+        "wires": [
+            [
+                "ded92c0eca85539b"
+            ]
+        ]
+    },
+    {
+        "id": "ded92c0eca85539b",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "init",
+        "func": "flow.set(\"FC\", 3);\nflow.set(\"address\", 1);\nflow.set(\"length\", 1);\nflow.set(\"enabled\", false);\nflow.set(\"count\", 0);\nflow.set(\"conversion\", 0);\nflow.set(\"hex\", 0);\nflow.set(\"conversion_float\", 0);\nflow.set(\"signed\",0)\nflow.set(\"double\", 0)\nflow.set(\"long\", 0)\n",
+        "outputs": "0",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 289.1429443359375,
+        "y": 862.8571310043335,
+        "wires": []
+    },
+    {
+        "id": "8cb94f101a5537b3",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "init",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "count",
+        "payloadType": "flow",
+        "x": 482.1429443359375,
+        "y": 623.8571310043335,
+        "wires": [
+            [
+                "1efdbc6a3a77ddf3"
+            ]
+        ]
+    },
+    {
+        "id": "1efdbc6a3a77ddf3",
+        "type": "ui_text",
+        "z": "3ca5e98ebdb8ae02",
+        "group": "bda4d49bf15fa6ca",
+        "order": 1,
+        "width": "5",
+        "height": "1",
+        "name": "read count",
+        "label": "Total reads: ",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 637.6429748535156,
+        "y": 623.8571329116821,
+        "wires": []
+    },
+    {
+        "id": "eb771e9e7d0c27c6",
+        "type": "status",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "scope": [
+            "fc177a823ea7bcf9"
+        ],
+        "x": 113.6429443359375,
+        "y": 623.8571310043335,
+        "wires": [
+            [
+                "7ee52b2e1830707e"
+            ]
+        ]
+    },
+    {
+        "id": "7ee52b2e1830707e",
+        "type": "ui_text",
+        "z": "3ca5e98ebdb8ae02",
+        "group": "bda4d49bf15fa6ca",
+        "order": 2,
+        "width": "5",
+        "height": "1",
+        "name": "Modbus status",
+        "label": "Status:",
+        "format": "{{msg.status.text}}",
+        "layout": "row-spread",
+        "x": 294.1429443359375,
+        "y": 623.8571310043335,
+        "wires": []
+    },
+    {
+        "id": "b63b470344783446",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "16To32Bit",
+        "func": "var values32bit = [];\n\nfor(var i=0;i<msg.payload.length;i++){\n    var tmp = msg.payload[i].toString(2);\n    tmp = tmp.length < 16 ? '0'.repeat(16-tmp.length) + tmp : tmp;\n    i++;\n    var tmp1 = i < msg.payload.length ? msg.payload[i].toString(2) : '0000000000000000';\n    tmp1 = tmp1.length < 16 ? '0'.repeat(16-tmp1.length) + tmp1 : tmp1;\n    var value = parseInt(tmp1+tmp,2);\n    if(flow.get('hex')) value = '0x'+value.toString(16).toUpperCase();\n        \n    values32bit.push(value);\n}\n\nmsg.payload = values32bit;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 880,
+        "y": 660,
+        "wires": [
+            [
+                "f62f034a54fd6c26"
+            ]
+        ]
+    },
+    {
+        "id": "4f04399aa27a9690",
+        "type": "switch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "property": "conversion",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 610,
+        "y": 680,
+        "wires": [
+            [
+                "749fd24c513dd3a5"
+            ],
+            [
+                "696d3a37793f5b6c",
+                "9b3e738263201cd2"
+            ]
+        ]
+    },
+    {
+        "id": "6286c1ed3b49d586",
+        "type": "ui_switch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "label": "32 bit",
+        "group": "27f299358e903064",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "x": 429.6429443359375,
+        "y": 1083.8571310043335,
+        "wires": [
+            [
+                "55e6e5df408c5c01"
+            ]
+        ]
+    },
+    {
+        "id": "55e6e5df408c5c01",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "flow.set(\"conversion\", msg.payload);\nif(!flow.get(\"conversion\") && flow.get(\"conversion_float\"))\n flow.set(\"conversion_float\", 0);",
+        "outputs": "0",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 592.1429443359375,
+        "y": 1083.8571310043335,
+        "wires": []
+    },
+    {
+        "id": "935690d9c877d583",
+        "type": "ui_dropdown",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "label": "FC",
+        "tooltip": "",
+        "place": "FC",
+        "group": "27f299358e903064",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "multiple": false,
+        "options": [
+            {
+                "label": "Read Coil Status FC 1",
+                "value": 1,
+                "type": "num"
+            },
+            {
+                "label": "Read Holding Register FC 3",
+                "value": 3,
+                "type": "num"
+            },
+            {
+                "label": "Read Status Register FC 4",
+                "value": 4,
+                "type": "num"
+            }
+        ],
+        "payload": "",
+        "topic": "",
+        "topicType": "str",
+        "className": "",
+        "x": 429.1429443359375,
+        "y": 1043.8571310043335,
+        "wires": [
+            [
+                "dca435e8d62324ac"
+            ]
+        ]
+    },
+    {
+        "id": "3719c584013c9c6a",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "topic": "",
+        "payload": "address",
+        "payloadType": "flow",
+        "x": 214.1429443359375,
+        "y": 955.8571310043335,
+        "wires": [
+            [
+                "e2221030566905e9"
+            ]
+        ]
+    },
+    {
+        "id": "19932dc2ccfa2517",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "topic": "",
+        "payload": "length",
+        "payloadType": "flow",
+        "x": 213.1429443359375,
+        "y": 1000.8571310043335,
+        "wires": [
+            [
+                "aad2723d1753985a"
+            ]
+        ]
+    },
+    {
+        "id": "4a43bd71ab8062d8",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "topic": "",
+        "payload": "FC",
+        "payloadType": "flow",
+        "x": 202.1429443359375,
+        "y": 1043.8571310043335,
+        "wires": [
+            [
+                "935690d9c877d583"
+            ]
+        ]
+    },
+    {
+        "id": "3ccd78a9cfa4066b",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "repeat": "0.1",
+        "crontab": "",
+        "once": true,
+        "topic": "",
+        "payload": "conversion",
+        "payloadType": "flow",
+        "x": 230.1429443359375,
+        "y": 1083.8571310043335,
+        "wires": [
+            [
+                "6286c1ed3b49d586"
+            ]
+        ]
+    },
+    {
+        "id": "60b04d6ba067bac5",
+        "type": "comment",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "READ",
+        "info": "",
+        "x": 74.6429443359375,
+        "y": 809.8571310043335,
+        "wires": []
+    },
+    {
+        "id": "25c5d4faf9f1e1b0",
+        "type": "comment",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "OUTPUT",
+        "info": "",
+        "x": 86.1429443359375,
+        "y": 570.8571310043335,
+        "wires": []
+    },
+    {
+        "id": "622313049e40e3cd",
+        "type": "ui_switch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "label": "Hex Values",
+        "group": "27f299358e903064",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "x": 435.9085693359375,
+        "y": 1130.6071310043335,
+        "wires": [
+            [
+                "82ad3dfc2e67027d"
+            ]
+        ]
+    },
+    {
+        "id": "82ad3dfc2e67027d",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "flow.set(\"hex\", msg.payload);\n\nif(flow.get(\"hex\") && flow.get(\"conversion_float\"))\n flow.set(\"conversion_float\", 0);",
+        "outputs": "0",
+        "noerr": 0,
+        "x": 589.4085693359375,
+        "y": 1130.6071310043335,
+        "wires": []
+    },
+    {
+        "id": "68942268183d4d0b",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "repeat": "0.1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "hex",
+        "payloadType": "flow",
+        "x": 200.4085693359375,
+        "y": 1130.6071310043335,
+        "wires": [
+            [
+                "622313049e40e3cd"
+            ]
+        ]
+    },
+    {
+        "id": "749fd24c513dd3a5",
+        "type": "switch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "property": "hex",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 2,
+        "x": 870,
+        "y": 620,
+        "wires": [
+            [
+                "358f0f0598f88584"
+            ],
+            [
+                "5a2029be7488cda1"
+            ]
+        ]
+    },
+    {
+        "id": "358f0f0598f88584",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "toHex",
+        "func": "for(var i=0;i<msg.payload.length;i++)\n   msg.payload[i] = '0x'+msg.payload[i].toString(16).toUpperCase();\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1250,
+        "y": 620,
+        "wires": [
+            [
+                "5a2029be7488cda1"
+            ]
+        ]
+    },
+    {
+        "id": "900324104906af1d",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "repeat": "0.1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "conversion_float",
+        "payloadType": "flow",
+        "x": 221.1429443359375,
+        "y": 1176.8571310043335,
+        "wires": [
+            [
+                "95687463dcaf2ad4"
+            ]
+        ]
+    },
+    {
+        "id": "95687463dcaf2ad4",
+        "type": "ui_switch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "label": "Float",
+        "group": "27f299358e903064",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "x": 410.6429443359375,
+        "y": 1176.8571310043335,
+        "wires": [
+            [
+                "eb29687d85c9e0a7"
+            ]
+        ]
+    },
+    {
+        "id": "eb29687d85c9e0a7",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "flow.set(\"conversion_float\", msg.payload);\nif(!flow.get(\"conversion\") && flow.get(\"conversion_float\"))\n flow.set(\"conversion\", 1);\n\nif(flow.get(\"conversion_float\"))\n    flow.set(\"hex\", 0);",
+        "outputs": "0",
+        "noerr": 0,
+        "x": 587.1429443359375,
+        "y": 1176.8571310043335,
+        "wires": []
+    },
+    {
+        "id": "f62f034a54fd6c26",
+        "type": "switch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "property": "conversion_float",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 2,
+        "x": 1110,
+        "y": 720,
+        "wires": [
+            [
+                "5a2029be7488cda1"
+            ],
+            [
+                "25ba20350bbc270a"
+            ]
+        ]
+    },
+    {
+        "id": "797ebdfb832e57e2",
+        "type": "comment",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "CONNECTION",
+        "info": "",
+        "x": 118.46179962158203,
+        "y": 41.56597328186035,
+        "wires": []
+    },
+    {
+        "id": "6ad6b98d8338aa4c",
+        "type": "ui_text_input",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "label": "Address",
+        "group": "30bbd00da4188a8a",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "",
+        "x": 546.4617919921875,
+        "y": 131.01041412353516,
+        "wires": [
+            [
+                "e6770a9c940cf45b"
+            ]
+        ]
+    },
+    {
+        "id": "c92f69078d7ba097",
+        "type": "modbus-flex-connector",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "connection",
+        "maxReconnectsPerMinute": 4,
+        "emptyQueue": false,
+        "showStatusActivities": false,
+        "showErrors": false,
+        "server": "5574bf4fb1d109e6",
+        "x": 450.46185302734375,
+        "y": 385.01045298576355,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "85ba1af9d2073649",
+        "type": "ui_text_input",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "label": "Port",
+        "group": "30bbd00da4188a8a",
+        "order": 4,
+        "width": "3",
+        "height": "1",
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "",
+        "x": 536.4791259765625,
+        "y": 175.01040649414062,
+        "wires": [
+            [
+                "5abaf59edb41e3a8"
+            ]
+        ]
+    },
+    {
+        "id": "e6770a9c940cf45b",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "var options = flow.get(\"TCP_Connection\") || {};\n\noptions.tcpHost = msg.payload;\n\nflow.set(\"TCP_Connection\", options);",
+        "outputs": "0",
+        "noerr": 0,
+        "x": 700.017333984375,
+        "y": 131.23263549804688,
+        "wires": []
+    },
+    {
+        "id": "5abaf59edb41e3a8",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "var options = flow.get(\"TCP_Connection\") || {};\n\noptions.tcpPort = msg.payload;\n\nflow.set(\"TCP_Connection\", options);",
+        "outputs": "0",
+        "noerr": 0,
+        "x": 698.017333984375,
+        "y": 175.23263549804688,
+        "wires": []
+    },
+    {
+        "id": "6835fd2c5df44716",
+        "type": "ui_text_input",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "label": "Unit ID",
+        "group": "30bbd00da4188a8a",
+        "order": 5,
+        "width": "3",
+        "height": "1",
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "",
+        "x": 535.4791412353516,
+        "y": 225.23263549804688,
+        "wires": [
+            [
+                "8ef3525fe5acee43"
+            ]
+        ]
+    },
+    {
+        "id": "8ef3525fe5acee43",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "var options = flow.get(\"TCP_Connection\") || {};\n\noptions.unitId = msg.payload;\n\nflow.set(\"TCP_Connection\", options);",
+        "outputs": "0",
+        "noerr": 0,
+        "x": 697.0173492431641,
+        "y": 225.45486450195312,
+        "wires": []
+    },
+    {
+        "id": "1012f516ab5e1e09",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "topic": "",
+        "payload": "TCP_Connection",
+        "payloadType": "flow",
+        "x": 136,
+        "y": 147.23263549804688,
+        "wires": [
+            [
+                "21ce3fe45f6046b3",
+                "20326e1416b69d8f",
+                "b034cde524f9a259",
+                "b0e9f5d0a9882255"
+            ]
+        ]
+    },
+    {
+        "id": "21ce3fe45f6046b3",
+        "type": "change",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "set",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.tcpHost",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 385.0173645019531,
+        "y": 131.23263549804688,
+        "wires": [
+            [
+                "6ad6b98d8338aa4c"
+            ]
+        ]
+    },
+    {
+        "id": "20326e1416b69d8f",
+        "type": "change",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "set",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.tcpPort",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 383.0173645019531,
+        "y": 175.23263549804688,
+        "wires": [
+            [
+                "85ba1af9d2073649"
+            ]
+        ]
+    },
+    {
+        "id": "b034cde524f9a259",
+        "type": "change",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "set",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.unitId",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 380.0173645019531,
+        "y": 225.23263549804688,
+        "wires": [
+            [
+                "6835fd2c5df44716"
+            ]
+        ]
+    },
+    {
+        "id": "3a7b9a540eed40bf",
+        "type": "ui_button",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "connectTCP",
+        "group": "30bbd00da4188a8a",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Connect",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "compare_arrows",
+        "payload": "TCP_Connection",
+        "payloadType": "flow",
+        "topic": "",
+        "topicType": "str",
+        "x": 109.01741790771484,
+        "y": 357.2326593399048,
+        "wires": [
+            [
+                "e461ccdbfb85c01c"
+            ]
+        ]
+    },
+    {
+        "id": "e461ccdbfb85c01c",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "connect",
+        "func": "var options = msg.payload;\nvar error = {topic: \"TCP Connect\"};\nvar configs = flow.get('configs_TCP') || [];\n\noptions.connectorType = \"TCP\";\n\nif(!options.name || options.name === \"\"){\n    options.name = \"No name\";\n}\n\nif(!options.tcpPort)\n    options.tcpPort = 502;\n\nif(!options.tcpHost){\n    error.payload = \"TCP Host address not Valid\";\n    node.error(\"Error\",error);\n    return;\n}\n\nvar index = configs.findIndex(function(conf) {\n    return conf.name == options.name;\n});\n\nif(index < 0)\n    configs.push(options);\nelse\n    configs[index] = options;\n    \nflow.set('configs_TCP', configs);\n\nnode.send([msg, {payload:configs, topic:\"init\"}]);",
+        "outputs": "2",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 288.0174217224121,
+        "y": 357.23265838623047,
+        "wires": [
+            [
+                "c92f69078d7ba097",
+                "67c63e0d93c678e8"
+            ],
+            [
+                "d8a28a86477eeadf"
+            ]
+        ]
+    },
+    {
+        "id": "738a0f6595cc07af",
+        "type": "ui_text_input",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "custom port",
+        "label": "or choose a custom Port",
+        "group": "02c7562b9faf050e",
+        "order": 4,
+        "width": "6",
+        "height": "1",
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "",
+        "x": 1330.03466796875,
+        "y": 157.23262786865234,
+        "wires": [
+            [
+                "84bb0dd959d25b1f"
+            ]
+        ]
+    },
+    {
+        "id": "fec40ab0311f3b6b",
+        "type": "ui_text_input",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "label": "Unit ID",
+        "group": "02c7562b9faf050e",
+        "order": 5,
+        "width": "3",
+        "height": "1",
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "",
+        "x": 1308.034683227539,
+        "y": 200.4548568725586,
+        "wires": [
+            [
+                "d1328ac9cd625a39"
+            ]
+        ]
+    },
+    {
+        "id": "a9fc91fa1b791858",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "topic": "",
+        "payload": "SERIAL_Connection",
+        "payloadType": "flow",
+        "x": 926.5555419921875,
+        "y": 152.4548568725586,
+        "wires": [
+            [
+                "c08e3c59e66e4563",
+                "672c1d446ac1713e",
+                "3b99b339b21eb1a5",
+                "bb69c4bf289370d7",
+                "365071b0e4a938e3"
+            ]
+        ]
+    },
+    {
+        "id": "c08e3c59e66e4563",
+        "type": "change",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "set",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.serialPort",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1162.5729064941406,
+        "y": 157.4548568725586,
+        "wires": [
+            [
+                "738a0f6595cc07af"
+            ]
+        ]
+    },
+    {
+        "id": "672c1d446ac1713e",
+        "type": "change",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "set",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.unitId",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1160.5729064941406,
+        "y": 200.4548568725586,
+        "wires": [
+            [
+                "fec40ab0311f3b6b"
+            ]
+        ]
+    },
+    {
+        "id": "fe772c28e28c9b10",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "var options = flow.get(\"SERIAL_Connection\") || {};\n\nif(msg.payload)\n    options.serialPort = msg.payload;\n\nflow.set(\"SERIAL_Connection\", options);",
+        "outputs": "0",
+        "noerr": 0,
+        "x": 1479.5728759765625,
+        "y": 111.4548568725586,
+        "wires": []
+    },
+    {
+        "id": "3b99b339b21eb1a5",
+        "type": "change",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "set",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.serialPort",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1164.5729064941406,
+        "y": 111.4548568725586,
+        "wires": [
+            [
+                "ee4d50038127b68e"
+            ]
+        ]
+    },
+    {
+        "id": "ee4d50038127b68e",
+        "type": "ui_dropdown",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "port",
+        "label": "Port",
+        "place": "Choose a serial port",
+        "group": "02c7562b9faf050e",
+        "order": 3,
+        "width": "6",
+        "height": "1",
+        "passthru": true,
+        "options": [
+            {
+                "label": "/dev/ttyUSB0",
+                "value": "/dev/ttyUSB0",
+                "type": "str"
+            },
+            {
+                "label": "/dev/ttyUSB1",
+                "value": "/dev/ttyUSB1",
+                "type": "str"
+            },
+            {
+                "label": "/dev/ttyAMA0",
+                "value": "/dev/ttyAMA0",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "",
+        "x": 1311.5729064941406,
+        "y": 111.78819942474365,
+        "wires": [
+            [
+                "fe772c28e28c9b10"
+            ]
+        ]
+    },
+    {
+        "id": "84bb0dd959d25b1f",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "var options = flow.get(\"SERIAL_Connection\") || {};\n\noptions.serialPort = msg.payload;\n\nflow.set(\"SERIAL_Connection\", options);",
+        "outputs": "0",
+        "noerr": 0,
+        "x": 1480.5728759765625,
+        "y": 156.78819274902344,
+        "wires": []
+    },
+    {
+        "id": "d1328ac9cd625a39",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "var options = flow.get(\"SERIAL_Connection\") || {};\n\noptions.unitId = msg.payload;\n\nflow.set(\"SERIAL_Connection\", options);",
+        "outputs": "0",
+        "noerr": 0,
+        "x": 1480.5728759765625,
+        "y": 199.78819274902344,
+        "wires": []
+    },
+    {
+        "id": "bb69c4bf289370d7",
+        "type": "change",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "set",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.serialBaudrate",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1161.111099243164,
+        "y": 245.78817749023438,
+        "wires": [
+            [
+                "b4b20c5dbc62fc70"
+            ]
+        ]
+    },
+    {
+        "id": "2f45b8ef2dd1ab58",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "var options = flow.get(\"SERIAL_Connection\") || {};\n\noptions.serialBaudrate = msg.payload;\n\nflow.set(\"SERIAL_Connection\", options);",
+        "outputs": "0",
+        "noerr": 0,
+        "x": 1490,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "afcdfec01fc0cd5a",
+        "type": "ui_button",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "connectSERIAL",
+        "group": "02c7562b9faf050e",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Connect",
+        "color": "",
+        "bgcolor": "",
+        "icon": "compare_arrows",
+        "payload": "SERIAL_Connection",
+        "payloadType": "flow",
+        "topic": "",
+        "x": 120.0173568725586,
+        "y": 409.7881774902344,
+        "wires": [
+            [
+                "8722ec3b601a19f9"
+            ]
+        ]
+    },
+    {
+        "id": "b4b20c5dbc62fc70",
+        "type": "ui_dropdown",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "BaudRate",
+        "label": "Baud Rate",
+        "place": "Select a Boud Rate",
+        "group": "02c7562b9faf050e",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "options": [
+            {
+                "label": "",
+                "value": 115200,
+                "type": "num"
+            },
+            {
+                "label": "",
+                "value": 57600,
+                "type": "num"
+            },
+            {
+                "label": "",
+                "value": 38400,
+                "type": "num"
+            },
+            {
+                "label": "",
+                "value": 19200,
+                "type": "num"
+            },
+            {
+                "label": "",
+                "value": 9600,
+                "type": "num"
+            },
+            {
+                "label": "",
+                "value": 4800,
+                "type": "num"
+            },
+            {
+                "label": "",
+                "value": 2400,
+                "type": "num"
+            },
+            {
+                "label": "",
+                "value": 1200,
+                "type": "num"
+            },
+            {
+                "label": "",
+                "value": 300,
+                "type": "num"
+            },
+            {
+                "label": "",
+                "value": 110,
+                "type": "num"
+            },
+            {
+                "label": "",
+                "value": 75,
+                "type": "num"
+            }
+        ],
+        "payload": "",
+        "topic": "",
+        "x": 1315.239501953125,
+        "y": 245.78817749023438,
+        "wires": [
+            [
+                "2f45b8ef2dd1ab58"
+            ]
+        ]
+    },
+    {
+        "id": "fb240bac7bff30ab",
+        "type": "ui_dropdown",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "configurations",
+        "label": "Configurations",
+        "place": "Choose a conf...",
+        "group": "30bbd00da4188a8a",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "options": [
+            {
+                "label": "",
+                "value": "",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "",
+        "x": 1119.731704711914,
+        "y": 334.5819034576416,
+        "wires": [
+            [
+                "ca7c7bcfb7c8c12c"
+            ]
+        ]
+    },
+    {
+        "id": "fcd9820c43ed6eb1",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "topic": "init",
+        "payload": "configs_TCP",
+        "payloadType": "flow",
+        "x": 749.0174331665039,
+        "y": 385.01042461395264,
+        "wires": [
+            [
+                "d8a28a86477eeadf"
+            ]
+        ]
+    },
+    {
+        "id": "d8a28a86477eeadf",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "options",
+        "func": "var options = [];\n\n\n(msg.payload || []).forEach(function(opt) {\n    var tmp = {};\n    tmp[opt.name] = opt;\n    options.push(tmp);\n});\n\nmsg.options = options;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 935.0173721313477,
+        "y": 364.01040267944336,
+        "wires": [
+            [
+                "fb240bac7bff30ab"
+            ]
+        ]
+    },
+    {
+        "id": "9a97e5648e0cdc6a",
+        "type": "ui_text_input",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "label": "Name",
+        "group": "30bbd00da4188a8a",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "",
+        "x": 536.017333984375,
+        "y": 84.01041412353516,
+        "wires": [
+            [
+                "9525114d028876b3"
+            ]
+        ]
+    },
+    {
+        "id": "9525114d028876b3",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "var options = flow.get(\"TCP_Connection\") || {};\n\noptions.name = msg.payload;\n\nflow.set(\"TCP_Connection\", options);",
+        "outputs": "0",
+        "noerr": 0,
+        "x": 699.5728759765625,
+        "y": 84.23263549804688,
+        "wires": []
+    },
+    {
+        "id": "b0e9f5d0a9882255",
+        "type": "change",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "set",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.name",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 384.5729064941406,
+        "y": 84.23263549804688,
+        "wires": [
+            [
+                "9a97e5648e0cdc6a"
+            ]
+        ]
+    },
+    {
+        "id": "2888d60d746117f4",
+        "type": "ui_text_input",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "label": "Name",
+        "group": "02c7562b9faf050e",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "",
+        "x": 1313.4617919921875,
+        "y": 67.01041412353516,
+        "wires": [
+            [
+                "d73489ef994b42dd"
+            ]
+        ]
+    },
+    {
+        "id": "d73489ef994b42dd",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "var options = flow.get(\"SERIAL_Connection\") || {};\n\noptions.name = msg.payload;\n\nflow.set(\"SERIAL_Connection\", options);",
+        "outputs": "0",
+        "noerr": 0,
+        "x": 1481.017333984375,
+        "y": 67.23263549804688,
+        "wires": []
+    },
+    {
+        "id": "365071b0e4a938e3",
+        "type": "change",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "set",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.name",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1166.0173645019531,
+        "y": 67.23263549804688,
+        "wires": [
+            [
+                "2888d60d746117f4"
+            ]
+        ]
+    },
+    {
+        "id": "b0fb554e279b8a04",
+        "type": "ui_dropdown",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "configurations",
+        "label": "Configurations",
+        "place": "Choose a conf...",
+        "group": "02c7562b9faf050e",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "options": [
+            {
+                "label": "",
+                "value": "",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "",
+        "x": 1117.4460067749023,
+        "y": 464.5977191925049,
+        "wires": [
+            [
+                "9448f37d62d456f1"
+            ]
+        ]
+    },
+    {
+        "id": "a6077d9827019f86",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "topic": "init",
+        "payload": "configs_SERIAL",
+        "payloadType": "flow",
+        "x": 744.017391204834,
+        "y": 437.4548463821411,
+        "wires": [
+            [
+                "cc0ba8c08e58e93f"
+            ]
+        ]
+    },
+    {
+        "id": "cc0ba8c08e58e93f",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "options",
+        "func": "var options = [];\n\n(msg.payload || []).forEach(function(opt) {\n    var tmp = {};\n    tmp[opt.name] = opt;\n    options.push(tmp);\n});\n\nmsg.options = options;\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 933.0174179077148,
+        "y": 416.4548511505127,
+        "wires": [
+            [
+                "b0fb554e279b8a04"
+            ]
+        ]
+    },
+    {
+        "id": "8722ec3b601a19f9",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "connect",
+        "func": "var options = msg.payload;\nvar error = {topic: \"SERIAL Connect\"};\nvar configs = flow.get('configs_SERIAL') || [];\n\noptions.connectorType = \"SERIAL\";\n\nif(!options.name || options.name === \"\"){\n    options.name = \"No name\";\n}\n\nif(!options.serialPort){\n    error.payload = \"Serial port not valid\";\n    node.error(\"Error\",error);\n    return;\n}\n\nif(!options.serialBaudrate){\n    error.payload = \"Select a Baud Rate\";\n    node.error(\"Error\",error);\n    return;\n}\n\nif(!options.unitId){\n    error.payload = \"Unit ID not Valid\";\n    node.error(\"Error\",error);\n    return;\n}\n\nvar index = configs.findIndex(function(conf) {\n    return conf.name == options.name;\n});\n\nif(index < 0)\n    configs.push(options);\nelse\n    configs[index] = options;\n    \nflow.set('configs_SERIAL', configs);\n\nnode.send([msg, {payload:configs, topic:\"init\"}]);",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 290.0173645019531,
+        "y": 409.8992919921875,
+        "wires": [
+            [
+                "c92f69078d7ba097",
+                "ad4be1f84920bab5"
+            ],
+            [
+                "cc0ba8c08e58e93f"
+            ]
+        ]
+    },
+    {
+        "id": "408bf3d189df1836",
+        "type": "change",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "TCP_Connection",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1458.0652198791504,
+        "y": 334.9152021408081,
+        "wires": [
+            [
+                "928558eb7adf0241"
+            ]
+        ]
+    },
+    {
+        "id": "9f4cee37ab2e7365",
+        "type": "change",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "SERIAL_Connection",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1467.9221725463867,
+        "y": 464.4865942001343,
+        "wires": [
+            [
+                "e5c2935df07b824b"
+            ]
+        ]
+    },
+    {
+        "id": "62db04f42bad6ed8",
+        "type": "link in",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "set_tcp",
+        "links": [
+            "928558eb7adf0241",
+            "67c63e0d93c678e8"
+        ],
+        "x": 220.46198081970215,
+        "y": 84.89933586120605,
+        "wires": [
+            [
+                "b0e9f5d0a9882255",
+                "21ce3fe45f6046b3",
+                "20326e1416b69d8f",
+                "b034cde524f9a259"
+            ]
+        ]
+    },
+    {
+        "id": "928558eb7adf0241",
+        "type": "link out",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "set_tcp",
+        "links": [
+            "62db04f42bad6ed8"
+        ],
+        "x": 1620.60462474823,
+        "y": 335.47075176239014,
+        "wires": []
+    },
+    {
+        "id": "3a3cca3e60cf7295",
+        "type": "link in",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "set_serial",
+        "links": [
+            "e5c2935df07b824b",
+            "ad4be1f84920bab5"
+        ],
+        "x": 992.4618768692017,
+        "y": 66.89929580688477,
+        "wires": [
+            [
+                "365071b0e4a938e3",
+                "3b99b339b21eb1a5",
+                "c08e3c59e66e4563",
+                "672c1d446ac1713e",
+                "bb69c4bf289370d7"
+            ]
+        ]
+    },
+    {
+        "id": "e5c2935df07b824b",
+        "type": "link out",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "set_serial",
+        "links": [
+            "3a3cca3e60cf7295"
+        ],
+        "x": 1630.175989151001,
+        "y": 464.0420923233032,
+        "wires": []
+    },
+    {
+        "id": "5ab5d2729751a621",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "init",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "",
+        "payload": "{\"options\":[]}",
+        "payloadType": "json",
+        "x": 728.9999771118164,
+        "y": 505.57143783569336,
+        "wires": [
+            [
+                "7fcf978d3d62ef8e",
+                "fb240bac7bff30ab",
+                "b0fb554e279b8a04"
+            ]
+        ]
+    },
+    {
+        "id": "7fcf978d3d62ef8e",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "init confs",
+        "func": "flow.set(\"configs_TCP\", null);\nflow.set(\"configs_SERIAL\", null);",
+        "outputs": "0",
+        "noerr": 0,
+        "x": 886.7143058776855,
+        "y": 506.00001430511475,
+        "wires": []
+    },
+    {
+        "id": "ca7c7bcfb7c8c12c",
+        "type": "switch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "check",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "init",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 1277.8570747375488,
+        "y": 335.14288997650146,
+        "wires": [
+            [
+                "408bf3d189df1836"
+            ]
+        ]
+    },
+    {
+        "id": "9448f37d62d456f1",
+        "type": "switch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "check",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "init",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "outputs": 1,
+        "x": 1277.0000076293945,
+        "y": 464.42857837677,
+        "wires": [
+            [
+                "9f4cee37ab2e7365"
+            ]
+        ]
+    },
+    {
+        "id": "a88a63ed451aea27",
+        "type": "catch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "scope": [
+            "8722ec3b601a19f9",
+            "e461ccdbfb85c01c"
+        ],
+        "x": 160.00000762939453,
+        "y": 496.42858505249023,
+        "wires": [
+            [
+                "819376a67794459a"
+            ]
+        ]
+    },
+    {
+        "id": "819376a67794459a",
+        "type": "ui_toast",
+        "z": "3ca5e98ebdb8ae02",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "topic": "Error",
+        "name": "error",
+        "x": 320,
+        "y": 496.4285774230957,
+        "wires": []
+    },
+    {
+        "id": "67c63e0d93c678e8",
+        "type": "link out",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "init_tcp",
+        "links": [
+            "62db04f42bad6ed8"
+        ],
+        "x": 431.42858600616455,
+        "y": 330.2857265472412,
+        "wires": []
+    },
+    {
+        "id": "ad4be1f84920bab5",
+        "type": "link out",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "init_serial",
+        "links": [
+            "3a3cca3e60cf7295"
+        ],
+        "x": 426.42856788635254,
+        "y": 453.1428499221802,
+        "wires": []
+    },
+    {
+        "id": "e2221030566905e9",
+        "type": "ui_text_input",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "label": "Address",
+        "tooltip": "",
+        "group": "27f299358e903064",
+        "order": 1,
+        "width": "3",
+        "height": "1",
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "str",
+        "x": 438.2857360839844,
+        "y": 955.4285888671875,
+        "wires": [
+            [
+                "5bf1298e67e5577b"
+            ]
+        ]
+    },
+    {
+        "id": "aad2723d1753985a",
+        "type": "ui_text_input",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "label": "Length",
+        "group": "27f299358e903064",
+        "order": 2,
+        "width": "3",
+        "height": "1",
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "",
+        "x": 427.1428527832031,
+        "y": 1001.1428833007812,
+        "wires": [
+            [
+                "4a3f67f632ba1ab5"
+            ]
+        ]
+    },
+    {
+        "id": "6f7966e7d2e78fa7",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "topic": "init",
+        "payload": "{\"payload\":null}",
+        "payloadType": "json",
+        "x": 838.5714492797852,
+        "y": 307.1428499221802,
+        "wires": [
+            [
+                "fb240bac7bff30ab",
+                "b0fb554e279b8a04"
+            ]
+        ]
+    },
+    {
+        "id": "25ba20350bbc270a",
+        "type": "toFloat",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "toFixed": "4",
+        "x": 1287.6429443359375,
+        "y": 761.8571166992188,
+        "wires": [
+            [
+                "5a2029be7488cda1"
+            ]
+        ]
+    },
+    {
+        "id": "fa7f5e61294f6640",
+        "type": "ui_text",
+        "z": "3ca5e98ebdb8ae02",
+        "group": "bda4d49bf15fa6ca",
+        "order": 3,
+        "width": "0",
+        "height": "0",
+        "name": "",
+        "label": "Received Data: ",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 449.00000762939453,
+        "y": 768.0000534057617,
+        "wires": []
+    },
+    {
+        "id": "555cf5ce517906cd",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "16To32Bit_Inverse",
+        "func": "var values32bit = [];\n\nfor(var i=0;i<msg.payload.length;i++){\n    var tmp = msg.payload[i].toString(2);\n    tmp = tmp.length < 16 ? '0'.repeat(16-tmp.length) + tmp : tmp;\n    i++;\n    var tmp1 = i < msg.payload.length ? msg.payload[i].toString(2) : '0000000000000000';\n    tmp1 = tmp1.length < 16 ? '0'.repeat(16-tmp1.length) + tmp1 : tmp1;\n    var value = parseInt(tmp+tmp1,2);\n    if(flow.get('hex')) value = '0x'+value.toString(16).toUpperCase();\n        \n    values32bit.push(value);\n}\n\nmsg.payload = values32bit;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 890,
+        "y": 700,
+        "wires": [
+            [
+                "f62f034a54fd6c26"
+            ]
+        ]
+    },
+    {
+        "id": "f248b35486bc4aa9",
+        "type": "ui_switch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "label": "Invert",
+        "tooltip": "",
+        "group": "27f299358e903064",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 415.01953887939453,
+        "y": 1226.003960609436,
+        "wires": [
+            [
+                "ae074b57fcf4e4d1"
+            ]
+        ]
+    },
+    {
+        "id": "696d3a37793f5b6c",
+        "type": "switch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "Inv",
+        "property": "inverse",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 630,
+        "y": 740,
+        "wires": [
+            [
+                "b63b470344783446"
+            ],
+            [
+                "555cf5ce517906cd"
+            ]
+        ]
+    },
+    {
+        "id": "ae074b57fcf4e4d1",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "flow.set(\"inverse\", msg.payload);",
+        "outputs": "0",
+        "noerr": 0,
+        "x": 585.0195960998535,
+        "y": 1226.0039138793945,
+        "wires": []
+    },
+    {
+        "id": "727a3277e13e0b46",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "0.1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "inverse",
+        "payloadType": "flow",
+        "x": 206.01953125,
+        "y": 1226.0039463043213,
+        "wires": [
+            [
+                "f248b35486bc4aa9"
+            ]
+        ]
+    },
+    {
+        "id": "9b3e738263201cd2",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "64Bit_Int",
+        "func": "// 13.04.2019 Ben ekledim, kodu asagidan aldim\n// 16to32bit ornegine bakarak 4 registeri birlestirdim 64 Bit integer yaptim\n\nvar values64bit = [];\n\nfor(var i=0;i<msg.payload.length;i++){\n    var tmp = msg.payload[i].toString(4);\n    tmp = tmp.length < 16 ? '0'.repeat(16-tmp.length) + tmp : tmp;\n    i++;\n    var tmp1 = i < msg.payload.length ? msg.payload[i].toString(4) : '0000000000000000';\n    tmp1 = tmp1.length < 16 ? '0'.repeat(16-tmp1.length) + tmp1 : tmp1;\n    i++;\n    var tmp2 = i < msg.payload.length ? msg.payload[i].toString(4) : '0000000000000000';\n    tmp2 = tmp2.length < 16 ? '0'.repeat(16-tmp2.length) + tmp2 : tmp2;\n    i++;\n    var tmp3 = i < msg.payload.length ? msg.payload[i].toString(4) : '0000000000000000';\n    tmp3 = tmp3.length < 16 ? '0'.repeat(16-tmp3.length) + tmp3 : tmp3;\n    \n    var value = parseInt(tmp+tmp1+tmp2+tmp3,4); // 64 Bit int olarak birlestiriyor\n\n    if(flow.get('hex')) value = '0x'+value.toString(16).toUpperCase();\n        \n    values64bit.push(value);\n}\n\nmsg.payload = values64bit;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ebe511ba42fc095f",
+        "type": "ui_switch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "label": "signed",
+        "tooltip": "",
+        "group": "27f299358e903064",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 410,
+        "y": 1280,
+        "wires": [
+            [
+                "bc47b732f2aa2bfa"
+            ]
+        ]
+    },
+    {
+        "id": "bc47b732f2aa2bfa",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "flow.set(\"signed\", msg.payload);",
+        "outputs": "0",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 1280,
+        "wires": []
+    },
+    {
+        "id": "27fb8c607989abb3",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "0.1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "signed",
+        "payloadType": "flow",
+        "x": 210,
+        "y": 1280,
+        "wires": [
+            [
+                "ebe511ba42fc095f"
+            ]
+        ]
+    },
+    {
+        "id": "7813bc0cdb22f9f8",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "signed",
+        "func": "let signed_array = []\nfor (var i = 0; i < msg.payload.length; i++) \n{\n\n    msg.payload[i] = (msg.payload[i] << 16) >> 16\n    signed_array.push(msg.payload[i])\n}\nmsg.payload = signed_array;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 800,
+        "wires": [
+            [
+                "5a2029be7488cda1",
+                "6abce569e6d1a539"
+            ]
+        ]
+    },
+    {
+        "id": "d8ec521c45312ee5",
+        "type": "switch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "property": "signed",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 610,
+        "y": 780,
+        "wires": [
+            [],
+            [
+                "7813bc0cdb22f9f8"
+            ]
+        ]
+    },
+    {
+        "id": "8a70110f4b362593",
+        "type": "ui_switch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "label": "double",
+        "tooltip": "",
+        "group": "27f299358e903064",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 410,
+        "y": 1340,
+        "wires": [
+            [
+                "a3fae5758701ad5e"
+            ]
+        ]
+    },
+    {
+        "id": "a3fae5758701ad5e",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "flow.set(\"double\", msg.payload);",
+        "outputs": "0",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 1340,
+        "wires": []
+    },
+    {
+        "id": "16403d5fdbf72216",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "0.1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "double",
+        "payloadType": "flow",
+        "x": 210,
+        "y": 1340,
+        "wires": [
+            [
+                "8a70110f4b362593"
+            ]
+        ]
+    },
+    {
+        "id": "8d62d051b947bb0e",
+        "type": "switch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "property": "double",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 670,
+        "y": 820,
+        "wires": [
+            [],
+            [
+                "08615263d8b06d04"
+            ]
+        ]
+    },
+    {
+        "id": "6abce569e6d1a539",
+        "type": "debug",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "debug 52",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1100,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "08615263d8b06d04",
+        "type": "buffer-parser",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "data": "payload",
+        "dataType": "msg",
+        "specification": "spec",
+        "specificationType": "ui",
+        "items": [
+            {
+                "type": "doublele",
+                "name": "item1",
+                "offset": 0,
+                "length": 2,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            }
+        ],
+        "swap1": "swap16",
+        "swap2": "",
+        "swap3": "",
+        "swap1Type": "swap",
+        "swap2Type": "swap",
+        "swap3Type": "swap",
+        "msgProperty": "payload",
+        "msgPropertyType": "str",
+        "resultType": "value",
+        "resultTypeType": "return",
+        "multipleResult": false,
+        "fanOutMultipleResult": false,
+        "setTopic": true,
+        "outputs": 1,
+        "x": 1010,
+        "y": 880,
+        "wires": [
+            [
+                "c19cd27336310725"
+            ]
+        ]
+    },
+    {
+        "id": "c19cd27336310725",
+        "type": "array-iterator",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "input": "payload",
+        "inputType": "msg",
+        "outputType": "msg",
+        "output": "payload",
+        "repeat": true,
+        "x": 1240,
+        "y": 880,
+        "wires": [
+            [
+                "5a2029be7488cda1"
+            ]
+        ]
+    },
+    {
+        "id": "c27a4ad7f34ba91c",
+        "type": "ui_switch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "label": "long",
+        "tooltip": "",
+        "group": "27f299358e903064",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 410,
+        "y": 1400,
+        "wires": [
+            [
+                "abd0fa8f1322577d"
+            ]
+        ]
+    },
+    {
+        "id": "abd0fa8f1322577d",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "save",
+        "func": "flow.set(\"long\", msg.payload);",
+        "outputs": "0",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 1400,
+        "wires": []
+    },
+    {
+        "id": "094afbd5399a4cdb",
+        "type": "inject",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "0.1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "long",
+        "payloadType": "flow",
+        "x": 200,
+        "y": 1400,
+        "wires": [
+            [
+                "c27a4ad7f34ba91c"
+            ]
+        ]
+    },
+    {
+        "id": "8f9b2ef9ab821239",
+        "type": "switch",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "",
+        "property": "long",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 770,
+        "y": 920,
+        "wires": [
+            [],
+            [
+                "4a5e3f9a3f8837c5"
+            ]
+        ]
+    },
+    {
+        "id": "4a5e3f9a3f8837c5",
+        "type": "function",
+        "z": "3ca5e98ebdb8ae02",
+        "name": "long",
+        "func": "let long_array = []\n    for (var i = 0; i < msg.payload.length; i++) \n    {\n\n        var value = (msg.payload[i + 1] << 16) + msg.payload[i];\n        i++;\n       \n        long_array.push(value)        \n     \n    }\nmsg.payload = long_array;\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1010,
+        "y": 1020,
+        "wires": [
+            [
+                "5a2029be7488cda1"
+            ]
+        ]
+    },
+    {
+        "id": "27f299358e903064",
+        "type": "ui_group",
+        "name": "Read (0 Based)",
+        "tab": "fbfd78be.89d968",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "5574bf4fb1d109e6",
+        "type": "modbus-client",
+        "name": "MODSCAN",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "failureLogEnabled": false,
+        "tcpHost": "192.168.5.113",
+        "tcpPort": "502",
+        "tcpType": "TCP-RTU-BUFFERED",
+        "serialPort": "/dev/ttyUSB0",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "serialAsciiResponseStartDelimiter": "",
+        "unit_id": 1,
+        "commandDelay": 1,
+        "clientTimeout": 1000,
+        "reconnectOnTimeout": false,
+        "reconnectTimeout": 2000,
+        "parallelUnitIdsAllowed": false
+    },
+    {
+        "id": "bda4d49bf15fa6ca",
+        "type": "ui_group",
+        "name": "Output",
+        "tab": "fbfd78be.89d968",
+        "order": 5,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "30bbd00da4188a8a",
+        "type": "ui_group",
+        "name": "TCP",
+        "tab": "fbfd78be.89d968",
+        "order": 2,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "02c7562b9faf050e",
+        "type": "ui_group",
+        "name": "Serial",
+        "tab": "fbfd78be.89d968",
+        "order": 1,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "fbfd78be.89d968",
+        "type": "ui_tab",
+        "name": "Modscan (Iplon)",
+        "icon": "dashboard",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    }
+]
